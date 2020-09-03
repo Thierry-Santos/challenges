@@ -1,44 +1,131 @@
-# Challenges
+# iHeros
 
-Com o objetivo de se tornar um funcionário ZRP você precisa provar para o nosso timme, um grupo de profissionais extremamente competentes e habilidosos, que você será capaz de analisar, prever e desenvolver as tarefas que te forem designadas.
+### This project is about how I solved the next problem:
 
-Para cada um dos possíveis cargos que você for se candidatar haverá desafios dos mais diversos níveis, podendo estes serem _fáceis_, _normais_ ou _difíceis_. Você pode submeter o teste que achar que mais se encaixa com o seu perfil.
+You are in the year 3150 and you are in charge of the technology sector responsible for the development of the Heroes distribution management system to combat threats. The system should monitor the threat alert system provided by the UN and allocate heroes for each new threat on the globe.
 
-## Como submeter o seu projeto
+# Roadmap
 
-Cada área e cada projeto tem a sua própria regra quanto a submissão do desafio. Leia atentamente as regras e instruções antes de enviar seu projeto.
+## Database
 
-> Dúvidas? Envie um email para [jobs@zrp.com.br](jobs@zrp.com.br).
+Although of being a simple schema, I've decided to model and create a database for the system, so we have these tables:
 
-## Como o processo seletivo da ZRP funciona
+- users: Credentials for access the platform;
+- heros: Hero's register, only a user can create/update/delete a hero;
+- occurrences: Occurrence's register, an occurrence only is created when a socket message arrives with a new Thread;
+- hero_occurrences: Relation for heros and occurrences;
 
-### Primeira Fase - Seleção
+![images/Screen_Shot_2020-08-30_at_00.56.19.png](images/Screen_Shot_2020-08-30_at_00.56.19.png)
 
-Na primeira fase você será avaliado por um dos sócios da ZRP. O objetivo dessa avaliação é ver se você possui aderência à cultura da empresa. Nós prezamos por pessoas prestativas, pró-ativas, comunicativas e interessadas em aprender. Suas core skills serão os seus diferenciais aqui.
+## Backend
 
-### Segunda Fase - Desafio
+The idea on the backend was to keep it simple, there is 4 controllers one for each table, basically to handle the CRUD. I used JWT token for authentication and make that some routes are only accessible when the user is authenticated, there is some services to handle the logic for example, to assign a hero for a determined occurrence.
 
-Se você passar na primeira fase você deverá escolher um desafio que você deseja enviar e nos dar uma previsão de quanto tempo você demorará para enviar aquele desafio.
-Não há tempo limite para a submissão, porém você será avaliado pela sua capacidade de prever seu tempo de entrega.
+I've decided to use docker on api because it's more simple to run the project in another machine or even send it to production.
 
-Depois desse envio nosso time irá avaliar se:
+## Frontend
 
-- Você teve uma boa previsão do tempo que você levaria para resolver o problema
-- Resolveu com precisão o problema apresentado
-- Cumpriu com os requisitos e critérios de avaliação daquele desafio
+The idea was to make a dashboard where the user could visualize heroes, threats and the Occurrences that have been already defeated
 
-### Terceira Fase - Feedback
+This is a design example for the frontend:
 
-Para aqueles que submeteram o desafio da segunda fase haverá uma revisão do desafio pelo nosso time e te chamaremos para um breve call de feedback dizendo se você foi contratado ou não e o porque da decisão.
+![images/Screen_Shot_2020-09-02_at_22.23.16.png](images/Screen_Shot_2020-09-02_at_22.23.16.png)
 
-### Escolha o seu caminho
+![images/Screen_Shot_2020-09-02_at_22.26.03.png](images/Screen_Shot_2020-09-02_at_22.26.03.png)
 
-Para qual vaga você está se candidatando?
+![images/Screen_Shot_2020-09-02_at_22.26.52.png](images/Screen_Shot_2020-09-02_at_22.26.52.png)
 
-- [Desenvolvedor](./dev)
-- [Devops](./devops)
-- [Designer](./design)
-- [PO](./po)
-- [QA](./qa)
-- [Comercial](./comercial)
-- [RH](./rh)
+![images/Screen_Shot_2020-09-02_at_22.27.47.png](images/Screen_Shot_2020-09-02_at_22.27.47.png)
+
+![images/Screen_Shot_2020-09-02_at_22.28.24.png](images/Screen_Shot_2020-09-02_at_22.28.24.png)
+
+## How to run the project
+
+First of all make sure you have this installed:
+
+```xml
+Node v10 or later
+postgres
+docker and docker-compose
+```
+
+Clone this repo
+
+```xml
+https://github.com/Thierry-Santos/challenges.git
+```
+
+### Commands to run API (Backend)
+
+go to: 
+
+```xml
+cd challenges/dev/api
+```
+
+... create a new file called .env and copy the content of .env.example inside your new file .env save and run this commands
+
+```jsx
+yarn install
+docker-compose build
+docker-compose up
+docker-compose run --rm iheros yarn sequelize db:create
+docker-compose run --rm iheros yarn sequelize db:migrate
+```
+
+To test the api without frontend there is a file called Insomnia.json, inside challenges/dev/api, just import this file in the insomnia software and all the workspace is configured, just when a authentication request is send it returns a token, you have to copy this token and place on workspace environment
+
+### Commands to run WEB (Frontend)
+
+go to: 
+
+```xml
+cd challenges/dev/web
+```
+
+... and run this commands
+
+```jsx
+yarn install
+yarn start
+```
+
+## Technologies and libraries
+
+This is the list of technologies and libraries used on this project
+
+### Database
+
+The database was created using postgres
+
+### Backend
+
+The API was build with node JS and using this dependencies:
+
+```jsx
+"bcryptjs"
+"date-fns"
+"express"
+"jsonwebtoken"
+"pg"
+"pg-hstore"
+"sequelize"
+```
+
+### Frontend
+
+The WEB was build with React JS and using this 
+
+```jsx
+"react-router-dom"
+"styled-components"
+"react-icons"
+"axios"
+"cors"
+"react-uuid"
+"socket.io-client"
+```
+
+# Contact
+
+Any problem feel free to contact me: thierrybarbosasantos@gmail.com
