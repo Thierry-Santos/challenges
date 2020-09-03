@@ -3,19 +3,24 @@ const AuthenticateUserService = require('../../../Services/AuthenticateUserServi
 
 class AuthController {
   async authenticate (req, res) {
-    const { name, password } = req.body;
+    try {
+      const { name, password } = req.body;
 
-    const authenticateUser = await new AuthenticateUserService(
-      name, 
-      password,
-    ).call();
+      const authenticateUser = await new AuthenticateUserService(
+        name, 
+        password,
+      ).call();
 
-    const data = {
-      user: authenticateUser.user.name,
-      token: authenticateUser.token
-    };
+      const data = {
+        user: authenticateUser.user.name,
+        token: authenticateUser.token
+      };
 
-    return res.json(data);
+      return res.json(data);
+    } catch (err) {
+      console.log('Authenticate ', err)
+      return res.sendStatus(400);
+    }
   }
 };
 

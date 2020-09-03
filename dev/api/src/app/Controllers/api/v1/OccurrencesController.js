@@ -2,12 +2,13 @@ const Occurrence = require('../../../models/Occurrence');
 const HeroOccurrence = require('../../../models/HeroOccurrence');
 
 const AlocationService = require('../../../Services/AlocationService');
+const DefeatedAtService = require('../../../Services/DefeatedAtService');
 
 class OccurrencesController {
   async index (req, res) {
-    const occurrences = await Occurrence.findAll({where: {deleted_at: null}});
+    const occurrences = await Occurrence.findAll();
 
-    if (!!occurrences) {
+    if (!occurrences) {
       return res.status(400).json({
          error: 'There is no occurrence registered' 
       });
@@ -73,7 +74,7 @@ class OccurrencesController {
       });
     };
 
-    const heroOccurrences = HeroOccurrence.findAll({where: {id: occurrence.id}});
+    const heroOccurrences = await HeroOccurrence.findAll({where: {id: occurrence.id}});
 
     if (!!heroOccurrences) {
       for (heroOccurrence of heroOccurrences) {
@@ -84,6 +85,19 @@ class OccurrencesController {
     await occurrence.update({ deleted_at: new Date() })
 
     return res.sendStatus(204);
+  }
+
+  async checkHeroOccurrence (req, res) {
+    try {
+      const { id } = req.params;
+
+      await new AlocationService(occurrence.id).call();
+      await new DefeatedAtService(id).call();
+
+      return res.sendStatus(204);
+    } catch (err) {
+      return res.sendStatus(400);
+    }
   }
 
 };

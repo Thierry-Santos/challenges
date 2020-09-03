@@ -6,6 +6,7 @@ class Occurrence extends Model {
       monster_name: DataTypes.STRING,
       danger_level: DataTypes.STRING,
       location: DataTypes.JSON,
+      deleted_at: DataTypes.DATE,
     }, {
       sequelize
     })

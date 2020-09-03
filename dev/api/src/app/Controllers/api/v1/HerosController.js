@@ -4,7 +4,7 @@ class HerosController {
   async index (req, res) {
     const heros = await Hero.findAll({where: {deleted_at: null}});
 
-    if (!!heros) {
+    if (!heros) {
       return res.status(400).json({
          error: 'There is no hero registered' 
       });

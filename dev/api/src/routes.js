@@ -10,7 +10,7 @@ const router = Router();
 
 router.post('/auth', AuthController.authenticate);
 
-router.post('/users', EnsureAuthenticated, UsersController.create);
+router.post('/users', UsersController.create);
 router.put('/users', EnsureAuthenticated, UsersController.update);
 
 router.get('/heros', EnsureAuthenticated, HerosController.index);
@@ -24,5 +24,7 @@ router.get('/occurrences/:id', EnsureAuthenticated, OccurrencesController.show);
 router.post('/occurrences', EnsureAuthenticated, OccurrencesController.create);
 router.put('/occurrences/:id', EnsureAuthenticated, OccurrencesController.update);
 router.delete('/occurrences/:id', EnsureAuthenticated, OccurrencesController.delete);
+
+router.put('/hero_occurrences/:id', EnsureAuthenticated, OccurrencesController.checkHeroOccurrence);
 
 module.exports = router;

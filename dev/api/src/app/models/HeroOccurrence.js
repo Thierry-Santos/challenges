@@ -3,6 +3,8 @@ const { Model, DataTypes } = require('sequelize');
 class HeroOccurrence extends Model {
   static init(sequelize) {
     super.init({
+      hero_id: DataTypes.INTEGER,
+      occurrence_id: DataTypes.INTEGER,
       defeated_at: DataTypes.DATE,
     }, {
       sequelize

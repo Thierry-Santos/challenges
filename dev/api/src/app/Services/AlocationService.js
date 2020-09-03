@@ -30,21 +30,13 @@ class AlocationService {
 
     const heros = await Hero.findAll({where: {deleted_at: null}});
 
-    if (!!!heros) {
+    if (!heros) {
       return {message: 'There is no Heros to defend this occurrence'}
     }
 
     let herosDistances = [];
 
     for (const hero of heros) {
-      const isAllocated = await HeroOccurrence.findOne({
-        where: {
-          hero_id: hero.id, 
-          deleted_at: null
-        }
-      });
-
-      if (!isAllocated) {
         const distance = await CalculateLocations(
           occurrence.location.lat,
           occurrence.location.lng,
@@ -52,14 +44,11 @@ class AlocationService {
           hero.location.lng,
         );
 
-        console.log('\n\n\n', occurrence.location.lat, hero.location.lat, typeof occurrence.location.lat, typeof hero.location.lat, '\n\n\n')
-
         herosDistances.push({id: hero.id, distance, hero_rank: hero.rank.toLowerCase()});
-      };
     }
 
     herosDistances.sort(function(a, b){return a.distance-b.distance});
-    console.log('\n\n\n', herosDistances, '\n\n\n')
+    console.log('\n\n\n', 'herosDistances', herosDistances, '\n\n\n')
 
     let herosOccurrences = [];
     let dangerSum = 0;
@@ -67,13 +56,12 @@ class AlocationService {
 
     while(
       (i < herosDistances.length) || 
-      (dangerSum >= await DangerEnum[occurrence.danger_level])
+      (dangerSum <= DangerEnum[occurrence.danger_level])
     ) {
-      console.log('ooooi', herosDistances[i].id, occurrence.id)
-      dangerSum += await RankEnum[herosDistances[i].hero_rank]
+      dangerSum += RankEnum[herosDistances[i].hero_rank]
       await HeroOccurrence.create({
-        hero_id: herosDistances[i].id,
-        occurrence_id: occurrence.id,
+        hero_id: Number(herosDistances[i].id),
+        occurrence_id: Number(occurrence.id),
       })
       i++;
     }
