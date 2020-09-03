@@ -3,6 +3,7 @@ import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
 import { FaUserCircle } from 'react-icons/fa';
 import socketIOClient from 'socket.io-client';
 
+import CreateHeroForm from '../../components/Forms/CreateHeroForm/CreateHeroForm';
 import images from '../../assets/images';
 import {
   App,
@@ -42,12 +43,6 @@ export const MapContainer = (props) => {
   const [userMenu, setUserMenu] = useState(false);
   const [heroCrud, setHeroCrud] = useState(false);
   const [heroCreate, setHeroCreate] = useState(false);
-  const [heroName, setHeroName] = useState('');
-  const [heroRank, setHeroRank] = useState('');
-  const [heroLat, setHeroLat] = useState('');
-  const [heroLng, setHeroLng] = useState('');
-  const [heroEdit, setHeroEdit] = useState(false);
-  const [heroList, setHeroList] = useState(false);
   const [refreshFlag, setRefreshFlag] = useState(false);
   const { addToast } = useToast();
   const { signOut, token, name } = useAuth();
@@ -66,10 +61,10 @@ export const MapContainer = (props) => {
   }, [refreshFlag]);
 
   useEffect(() => {
-    // const socket = socketIOClient(socketURL);
-    // socket.on('occurrence', (receivedInfo) => {
-    //   handleSocketReceive(receivedInfo);
-    // })
+    const socket = socketIOClient(socketURL);
+    socket.on('occurrence', (receivedInfo) => {
+      handleSocketReceive(receivedInfo);
+    })
   }, [])
 
   const handleSocketReceive = async (receivedInfo) => {
@@ -89,7 +84,7 @@ export const MapContainer = (props) => {
     setRefreshFlag(true);
   }
 
-  const createHero = async () => {
+  const createHero = async (heroName, heroRank, heroLng, heroLat) => {
     if (!heroName || !heroRank || !heroLng || !heroLat) { 
       addToast({
         type: 'error',
@@ -115,14 +110,13 @@ export const MapContainer = (props) => {
             'Content-Type': 'application/json'
           }
         });
-  
+        
       if (hero) {
         addToast({
           type: 'success',
           title: 'Successo',
           description: 'Heroi Criado!'
         })
-        setHeroCreate(false)
       }
     } catch (err) {
       addToast({
@@ -189,7 +183,7 @@ export const MapContainer = (props) => {
               <Button 
                 onClick={() => signOut()}
               >
-                Sair
+                Deslogar
               </Button>
             </>}
             {(heroCrud && !heroCreate) && 
@@ -199,50 +193,17 @@ export const MapContainer = (props) => {
               >
                 Criar Heroi
               </Button>
-              {/* {heros.map((item) => {console.log(item)})} */}
               <Button 
                 onClick={() => setHeroCrud(false)}
               >
                 Voltar
               </Button>
             </>}
-            {heroCreate && 
-            <>
-              <Input
-                type="Text" 
-                placeholder="Nome" 
-                onChange={(value) => setHeroName(value.target.value)}
-                value={heroName}
-              />
-              <Input 
-                type="Text" 
-                placeholder="Rank" 
-                onChange={(value) => setHeroRank(value.target.value)}
-                value={heroRank}
-              />
-              <Input 
-                type="Text" 
-                placeholder="Latitude" 
-                onChange={(value) => setHeroLat(value.target.value)}
-                value={heroLat}
-              />
-              <Input 
-                type="Text" 
-                placeholder="Longitude" 
-                onChange={(value) => setHeroLng(value.target.value)}
-                value={heroLng}
-              />
-              <Button 
-                onClick={() => createHero()}
-              >
-                Criar
-              </Button>
-              <Button 
-                onClick={() => setHeroCreate(false)}
-              >
-                Cancelar
-              </Button>
-            </>}
+            {heroCreate &&
+            <CreateHeroForm 
+              onCreate={(heroName, heroRank, heroLng, heroLat) => createHero(heroName, heroRank, heroLng, heroLat)} 
+              onBack={() => setHeroCreate(false)} 
+            />}
         </Component>
       </Modal>
     )
@@ -268,7 +229,7 @@ export const MapContainer = (props) => {
         zoom={3}
       >
 
-        {!userMenu && <UserMenuView />}
+        {userMenu && <UserMenuView />}
         {herosList.length > 0 && herosList.map((item, index) => (
           <Marker
             key={index}

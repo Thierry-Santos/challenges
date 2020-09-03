@@ -113,7 +113,7 @@ export const Modal = styled.div`
   height: 100vh;
 `;
 
-export const Component = styled.div`
+export const Component = styled.form`
   display: flex;
   flex-direction: column;
   background: #AB3648;
