@@ -48,7 +48,6 @@ class AlocationService {
     }
 
     herosDistances.sort(function(a, b){return a.distance-b.distance});
-    console.log('\n\n\n', 'herosDistances', herosDistances, '\n\n\n')
 
     let herosOccurrences = [];
     let dangerSum = 0;

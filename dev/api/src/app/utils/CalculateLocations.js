@@ -18,7 +18,6 @@ const distance = async (lat1, lon1, lat2, lon2) => {
 		dist = dist * 60 * 1.1515;
     dist = dist * 1.609344
     
-    console.log('\n\n\n', dist, typeof dist, Math.floor(dist), '\n\n\n')
 		return Math.floor(dist);
 	}
 };

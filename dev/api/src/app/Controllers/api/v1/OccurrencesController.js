@@ -91,7 +91,7 @@ class OccurrencesController {
     try {
       const { id } = req.params;
 
-      await new AlocationService(occurrence.id).call();
+      await new AlocationService(id).call();
       await new DefeatedAtService(id).call();
 
       return res.sendStatus(204);
